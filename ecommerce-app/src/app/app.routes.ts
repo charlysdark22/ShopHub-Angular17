@@ -1,12 +1,24 @@
 import { Routes } from '@angular/router';
-import { ProductListComponent } from './components/product-list/product-list.component';
-import { ProductDetailComponent } from './components/product-detail/product-detail.component';
-import { CartComponent } from './components/cart/cart.component';
-import { AuthComponent } from './components/auth/auth.component';
+import { AuthGuard } from './guards/auth.guard';
+import { canDeactivateGuard } from './guards/can-deactivate.guard';
 
 export const routes: Routes = [
-  { path: '', component: ProductListComponent },
-  { path: 'products/:id', component: ProductDetailComponent, loadChildren: () => import('./modules/product-detail.module').then(m => m.ProductDetailModule) },
-  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
-  { path: 'auth', component: AuthComponent },
+  {
+    path: '',
+    loadComponent: () => import('./components/product-list/product-list.component').then((m) => m.ProductListComponent),
+  },
+  {
+    path: 'products/:id',
+    loadComponent: () => import('./components/product-detail/product-detail.component').then((m) => m.ProductDetailComponent),
+  },
+  {
+    path: 'cart',
+    loadComponent: () => import('./components/cart/cart.component').then((m) => m.CartComponent),
+    canActivate: [AuthGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
+  {
+    path: 'auth',
+    loadComponent: () => import('./components/auth/auth.component').then((m) => m.AuthComponent),
+  },
 ];
